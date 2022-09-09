@@ -149,7 +149,8 @@ def run_one_job(
     if ptm:
         prefix = outname.rsplit(".",1)[0]
         suffix = outname.rsplit(".",1)[-1]
-        outname = prefix + f"_{to_np(result['ptm']):.2f}"  + suffix
+        outname = prefix + f"_{to_np(result['ptm']):.2f}."  + suffix
+
     to_pdb(outname, pred, result["plddt"], features_in["residue_index"])
 
     return result
@@ -167,6 +168,7 @@ def predict_structure_from_templates(
     max_extra_msa: int = -1,
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
+    ptm: bool = False,
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -184,6 +186,7 @@ def predict_structure_from_templates(
     max_extra_msa : Number of extra seqs for summary stats
     max_recycles : Number of iterations through AF2
     n_struct_module_repeats : Number of passes through structural refinement
+    ptm: whether adding ptm score within file name or not
     move_prefix : Prefix for temporary files (deleted after fxn completion)
 
     Returns
@@ -218,7 +221,7 @@ def predict_structure_from_templates(
         model_params=model_params,
     )
 
-    result = run_one_job(model_runner, features_in, random_seed, outname)
+    result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
 
     del model_runner
 
@@ -236,7 +239,7 @@ def predict_structure_no_templates(
     max_extra_msa: int = -1,
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
-    ptm: bool = False
+    ptm: bool = False,
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -252,7 +255,7 @@ def predict_structure_no_templates(
     max_extra_msa : Number of extra seqs for summary stats
     max_recycles : Number of iterations through AF2
     n_struct_module_repeats : Number of passes through structural refinement
-    ptm : printing ptm within file name or not
+    ptm : ptm: whether adding ptm score within file name or not
 
     Returns
     ----------
@@ -301,6 +304,7 @@ def predict_structure_from_custom_template(
     max_extra_msa: int = -1,
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
+    ptm: bool = False,
   ):
 
   f""" Predicts the structure.
@@ -317,6 +321,7 @@ def predict_structure_from_custom_template(
     max_extra_msa : Number of extra seqs for summary stats
     max_recycles : Number of iterations through AF2
     n_struct_module_repeats : Number of passes through structural refinement
+    ptm: whether adding ptm score within file name or not
 
 
   Output:
@@ -362,14 +367,14 @@ def predict_structure_from_custom_template(
       model_params=model_params,
   )
 
-  result = run_one_job(model_runner, features_in, random_seed, outname)
+  result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
 
   del model_runner
 
   return result
 
 def to_pdb(
-    outname, pred, plddts, ptm,  res_idx  # type unknown but check?  # type unknown but check?
+    outname, pred, plddts, res_idx  # type unknown but check?  # type unknown but check?
 ) -> NoReturn:
 
     r"""Writes unrelaxed PDB to file
@@ -401,4 +406,4 @@ def to_pdb(
                     )
                 )
     
-    os.rename(f"b_{ outname }", outname + f"{ptm}:.2f")
+    os.rename(f"b_{ outname }", outname)
