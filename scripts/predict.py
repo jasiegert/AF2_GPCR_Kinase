@@ -120,7 +120,7 @@ def set_config(
 
 
 def run_one_job(
-    runner: model.RunModel, features_in: dict, random_seed: int, outname: str
+    runner: model.RunModel, features_in: dict, random_seed: int, outname: str, ptm: bool
 ) -> Mapping[str, Any]:
     r"""Runs one AF2 job with input parameters
 
@@ -145,6 +145,11 @@ def run_one_job(
     pred = protein.from_prediction(features, result)
 
     # Write to file
+    to_np = lambda a: np.asarray(a)
+    if ptm:
+        prefix = outname.rsplit(".",1)[0]
+        suffix = outname.rsplit(".",1)[-1]
+        outname = prefix + f"_{to_np(result['ptm']):.2f}"  + suffix
     to_pdb(outname, pred, result["plddt"], features_in["residue_index"])
 
     return result
@@ -231,6 +236,7 @@ def predict_structure_no_templates(
     max_extra_msa: int = -1,
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
+    ptm: bool = False
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -246,6 +252,7 @@ def predict_structure_no_templates(
     max_extra_msa : Number of extra seqs for summary stats
     max_recycles : Number of iterations through AF2
     n_struct_module_repeats : Number of passes through structural refinement
+    ptm : printing ptm within file name or not
 
     Returns
     ----------
@@ -276,7 +283,7 @@ def predict_structure_no_templates(
         model_params=model_params,
     )
 
-    result = run_one_job(model_runner, features_in, random_seed, outname)
+    result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
 
     del model_runner
 
@@ -362,7 +369,7 @@ def predict_structure_from_custom_template(
   return result
 
 def to_pdb(
-    outname, pred, plddts, res_idx  # type unknown but check?  # type unknown but check?
+    outname, pred, plddts, ptm,  res_idx  # type unknown but check?  # type unknown but check?
 ) -> NoReturn:
 
     r"""Writes unrelaxed PDB to file
@@ -393,5 +400,5 @@ def to_pdb(
                         line[:21], line[22:60], plddts[seq_id], line[66:]
                     )
                 )
-
-    os.rename(f"b_{ outname }", outname)
+    
+    os.rename(f"b_{ outname }", outname + f"{ptm}:.2f")
