@@ -61,7 +61,7 @@ predict.predict_structure_from_templates( sequence, "out.pdb",
 To run a prediction with a custom PDB template:
 
 ```python
-predict.predict_structure_from_templates( sequence, "out.pdb",
+predict.predict_structure_from_custom_template( sequence, "out.pdb",
         a3m_lines, template_pdb = template_pdb,
         model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
         max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
