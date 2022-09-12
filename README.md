@@ -40,14 +40,14 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
 ```
 
-The following code then runs a prediction without templates. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified.
+The following code then runs a prediction without templates. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM-score of model within file name. 
 
 ```python
 from af2_conformations.scripts import predict
 
 predict.predict_structure_no_templates( sequence, "out.pdb",
          a3m_lines, model_id = 1, max_msa_clusters = 16,
-         max_extra_msa = 32, max_recycles = 1, n_struct_module_repeats = 8 )
+         max_extra_msa = 32, max_recycles = 1, n_struct_module_repeats = 8, ptm = True )
 ```
 
 To run a prediction with templates:
@@ -56,7 +56,15 @@ To run a prediction with templates:
 predict.predict_structure_from_templates( sequence, "out.pdb",
         a3m_lines, template_path = template_path,
         model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
-        max_recycles = 1, n_struct_module_repeats = 8 )
+        max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
+```
+To run a prediction with a custom PDB template:
+
+```python
+predict.predict_structure_from_templates( sequence, "out.pdb",
+        a3m_lines, template_pdb = template_pdb,
+        model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
+        max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
 ```
 
 There is also functionality to introduce mutations (e.g. alanines) across the entire MSA to remove the evolutionary evidence for specific interactions (see [here](https://www.biorxiv.org/content/10.1101/2021.11.29.470469v1) and [here](https://twitter.com/sokrypton/status/1464748132852547591) on why you would want to do this). This can be achieved as follows:
