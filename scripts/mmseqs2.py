@@ -267,6 +267,7 @@ class MMSeqs2Runner:
                 pdb = sl[1]
                 pdbid = pdb.split("_")[0]
                 
+                logging.warning("DEBUG  pdb: " + pdbid)
                 logging.warning("DEBUG  pdb: " + pdb)
                 
                 if templates[0] in ["Active", "Inactive", "Intermediate"]:
