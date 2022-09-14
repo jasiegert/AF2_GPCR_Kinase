@@ -277,7 +277,7 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     rj = r.json()
                     
-                    logging.warning(rj["state"])
+                    logging.warning(type(rj))
         
                     if rj["state"] == activation_state and len(pdbs) < 4:
                         if pdbid not in check_duplicates:
