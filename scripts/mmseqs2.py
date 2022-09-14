@@ -277,14 +277,11 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     rj = r.json()
                     
-                    if rj["state"]:
-        
-                        if rj["state"] == activation_state and len(pdbs) < 4:
-                            if pdbid not in check_duplicates:
-                                pdbs.append(pdb)
-                                check_duplicates.append(pdbid)
-                        if len(pdbs) == 4:
-                            break
+                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates:
+                        pdbs.append(pdb)
+                        check_duplicates.append(pdbid)
+                    if len(pdbs) == 4:
+                        break
 			
                 elif pdb in templates:
                     pdbs.append(sl[1])
