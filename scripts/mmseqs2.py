@@ -235,7 +235,7 @@ class MMSeqs2Runner:
                 )
             )
 
-    def process_templates(self, templates: List[str] = [], exclusion_gpcrs: List[str] = [] ) -> str:
+    def process_templates(self, templates: List[str] = [] ) -> str:
 
         r"""Process templates and fetch from MMSeqs2 server
 
@@ -274,7 +274,7 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     rj = r.json()
                     
-                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in exclusion_gpcrs:
+                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in templates:
                         pdbs.append(pdb)
                         check_duplicates.append(pdbid)
                     if len(pdbs) == 4:
