@@ -298,6 +298,8 @@ class MMSeqs2Runner:
                 pdbs = ",".join(templates[: self.n_templates])
             else:
                 pdbs = ",".join(pdbs[: self.n_templates])
+                
+            logging.warning("DEBUG  pdbs: " + pdbs)
 
             os.system(f"wget -q -O - { self.t_url }/{ pdbs } |tar xzf - -C { path }/")
 
