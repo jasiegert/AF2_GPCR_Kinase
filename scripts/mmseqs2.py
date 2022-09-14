@@ -267,15 +267,18 @@ class MMSeqs2Runner:
                 pdb = sl[1]
                 pdbid = pdb.split("_")[0]
                 
-                logging.warning("DEBUG  pdb: " + pdbid)
+                logging.warning("DEBUG  pdbid: " + pdbid)
                 logging.warning("DEBUG  pdb: " + pdb)
                 
                 if templates[0] in ["Active", "Inactive", "Intermediate"]:
-                    logging.warning("GPCR prediction mode on")
+                    
                     activation_state = templates[0]
                     url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                     r = requests.get( url )
                     r = r.json()
+                    
+                    logging.warning("rstate" + r["state"])
+                    logging.warning(activation_state)
         
                     if r["state"] == activation_state and len(pdbs) < 4:
                         if pdbid not in check_duplicates:
