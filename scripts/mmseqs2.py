@@ -269,15 +269,13 @@ class MMSeqs2Runner:
                     logging.info("GPCR prediction mode on")
                     activation_state = templates[0]
                     templates = []
-                    with open("pdb70.m8") as f:
-                        for line in f:
-                            url = "http://gpcrdb.org/services/structure/{}".format( pdb.split("_")[0] )
-                            r = requests.get( url )
-                            r = r.json()
-                            if r["state"] == activation_state and len(templates) < 4:
-                                templates.append(pdb) 
-                            else:
-                                break
+                    url = "http://gpcrdb.org/services/structure/{}".format( pdb.split("_")[0] )
+                    r = requests.get( url )
+                    r = r.json()
+                    if r["state"] == activation_state and len(templates) < 4:
+                        templates.append(pdb) 
+                    else:
+                        break
 			
                 if pdb in templates:
                     pdbs.append(sl[1])
