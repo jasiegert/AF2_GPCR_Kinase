@@ -235,14 +235,14 @@ class MMSeqs2Runner:
                 )
             )
 
-    def process_templates(self, templates: List[str] = [] ) -> str:
+    def process_templates(self, templates: List[str] = [], exclusion_list: List[str] = [] ) -> str:
 
         r"""Process templates and fetch from MMSeqs2 server
 
         Parameters
         ----------
-        use_templates : True/False whether to use templates
-        max_templates : Maximum number of templates to use
+        templates : list of pdb ids with chain
+        exclusion_list : list of pdb ids without chain
 
         Returns
         ----------
@@ -274,7 +274,7 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     rj = r.json()
                     
-                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates:
+                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in exclusion_list:
                         pdbs.append(pdb)
                         check_duplicates.append(pdbid)
                     if len(pdbs) == 4:
