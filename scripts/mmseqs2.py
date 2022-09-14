@@ -275,12 +275,11 @@ class MMSeqs2Runner:
                     activation_state = templates[0]
                     url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                     r = requests.get( url )
-                    r = r.json()
+                    rj = r.json()
                     
-                    logging.warning("rstate" + r["state"])
                     logging.warning(activation_state)
         
-                    if r["state"] == activation_state and len(pdbs) < 4:
+                    if rj["state"] == activation_state and len(pdbs) < 4:
                         if pdbid not in check_duplicates:
                             pdbs.append(pdb)
                             check_duplicates.append(pdbid)
