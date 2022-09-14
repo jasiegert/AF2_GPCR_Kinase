@@ -274,6 +274,7 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     r = r.json()
                     if r["state"] == activation_state and len(pdbs) < 4:
+                        logging.warning("DEBUG  pdb added " + pdb)
                         pdbs.append(pdb) 
                     else:
                         templates = pdbs
@@ -292,7 +293,7 @@ class MMSeqs2Runner:
             if not os.path.isdir(path):
                 os.mkdir(path)
 
-            pdbs = [t for t in pdbs if t in templates]
+#            pdbs = [t for t in pdbs if t in templates]
 
             if len(templates) == 0 or len(pdbs) == 0:
                 pdbs = ",".join(templates[: self.n_templates])
