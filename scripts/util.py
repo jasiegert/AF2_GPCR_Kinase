@@ -197,4 +197,3 @@ def pdb2str( pdbfile: str ) -> str:
     if line[ :4 ] == "ATOM":
       lines.append( line )
   return "".join( lines )
-

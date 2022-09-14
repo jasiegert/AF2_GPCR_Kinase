@@ -235,7 +235,7 @@ class MMSeqs2Runner:
                 )
             )
 
-    def process_templates(self, templates: List[str] = []) -> str:
+    def process_templates(self, templates: List[str] = [] ) -> str:
 
         r"""Process templates and fetch from MMSeqs2 server
 
@@ -264,6 +264,9 @@ class MMSeqs2Runner:
 
                 sl = line.rstrip().split()
                 pdb = sl[1]
+
+                if templates[0] in ["Active", "Inactive", "Intermediate"]:
+			
                 if pdb in templates:
                     pdbs.append(sl[1])
                     logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")

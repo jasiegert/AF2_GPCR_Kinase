@@ -407,3 +407,75 @@ def to_pdb(
                 )
     
     os.rename(f"b_{ outname }", outname)
+
+def predict_gpcr_conformation(
+    seq: str,
+    outname: str,
+    a3m_lines: str,
+    template_path: str,
+    model_id: int = -1,
+    model_params: int = -1,
+    random_seed: int = -1,
+    max_msa_clusters: int = 8,
+    max_extra_msa: int = 16,
+    max_recycles: int = 1,
+    n_struct_module_repeats: int = 8,
+    ptm: bool = False,
+    activation_state: str
+) -> NoReturn:
+
+    r"""Predicts the structure.
+
+    Parameters
+    ----------
+    seq : Sequence
+    outname : Name of output PDB
+    a3m_lines : String of entire alignment
+    template_paths : Where to locate templates
+    model_id : Which AF2 model to run (must be 1 or 2 for templates)
+    model_params : Which parameters to provide to AF2 model
+    random_seed : Random seed
+    max_msa_clusters : Number of sequences to use
+    max_extra_msa : Number of extra seqs for summary stats
+    max_recycles : Number of iterations through AF2
+    n_struct_module_repeats : Number of passes through structural refinement
+    ptm: whether adding ptm score within file name or not
+    move_prefix : Prefix for temporary files (deleted after fxn completion)
+
+    Returns
+    ----------
+    None
+
+    """
+
+    if random_seed == -1:
+        random_seed = random.randrange(sys.maxsize)
+
+    if model_id not in (1, 2):
+        model_id = random.randint(1, 2)
+
+    if model_params not in (1, 2):
+        model_params = random.randint(1, 2)
+
+    # Assemble the dictionary of input features
+    features_in = util.setup_features(
+        seq, a3m_lines, util.mk_template(seq, a3m_lines, template_path).features
+    )
+
+    # Run the models
+    model_runner = set_config(
+        True,
+        max_msa_clusters,
+        max_extra_msa,
+        max_recycles,
+        model_id,
+        n_struct_module_repeats,
+        len(features_in["msa"]),
+        model_params=model_params,
+    )
+
+    result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
+
+    del model_runner
+
+    return result
