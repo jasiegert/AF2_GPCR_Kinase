@@ -267,9 +267,6 @@ class MMSeqs2Runner:
                 pdb = sl[1]
                 pdbid = pdb.split("_")[0]
                 
-                logging.warning("DEBUG  pdbid: " + pdbid)
-                logging.warning("DEBUG  pdb: " + pdb)
-                
                 if templates[0] in ["Active", "Inactive", "Intermediate"]:
                     
                     activation_state = templates[0]
@@ -303,7 +300,7 @@ class MMSeqs2Runner:
             else:
                 pdbs = ",".join(pdbs[: self.n_templates])
                 
-            logging.warning("DEBUG  pdbs: " + pdbs)
+            logging.info("pdbs used are: " + pdbs)
 
             os.system(f"wget -q -O - { self.t_url }/{ pdbs } |tar xzf - -C { path }/")
 
