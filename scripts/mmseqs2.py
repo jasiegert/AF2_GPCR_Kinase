@@ -274,7 +274,7 @@ class MMSeqs2Runner:
                     r = requests.get( url )
                     r = r.json()
                     logging.warning(" r[state]" + r["state"])
-                    if r["state"] == activation_state and len(pdbs) < 4 and pdb.split("_")[0] not in [i.split("_")[0] for i in pdbs]:
+                    if r["state"] == activation_state and len(pdbs) < 4 and pdb.split("_")[0] not in (lambda x: [i.split("_")[0] for i in pdbs])(pdbs):
                         pdbs.append(pdb) 
                     if len(pdbs) == 4:
                         break
