@@ -273,13 +273,13 @@ class MMSeqs2Runner:
                     url = "http://gpcrdb.org/services/structure/{}".format( pdb.split("_")[0] )
                     r = requests.get( url )
                     r = r.json()
-                    if r["state"] == activation_state and len(templates) < 4:
+                    if r["state"] == activation_state and len(pdbs) < 4:
                         pdbs.append(pdb) 
                     else:
                         templates = pdbs
                         break
 			
-                if pdb in templates:
+                elif pdb in templates:
                     pdbs.append(sl[1])
                     logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")
 
