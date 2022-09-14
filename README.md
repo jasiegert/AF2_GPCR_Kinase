@@ -39,6 +39,12 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 # Fetches the data and saves to the appropriate directory
 a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
 ```
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state according to GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Active", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info.
+
+```
+import logging
+logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
+```
 
 The following code then runs a prediction without templates. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM-score of model within file name. 
 
