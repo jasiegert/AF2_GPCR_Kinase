@@ -267,22 +267,23 @@ class MMSeqs2Runner:
                 pdb = sl[1]
                 pdbid = pdb.split("_")[0]
                 
-                if templates[0] in ["Active", "Inactive", "Intermediate"]:
-                    
-                    activation_state = templates[0]
-                    url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
-                    r = requests.get( url )
-                    rj = r.json()
-                    
-                    if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in templates:
-                        pdbs.append(pdb)
-                        check_duplicates.append(pdbid)
-                    if len(pdbs) == 4:
-                        break
-			
-                elif pdb in templates:
-                    pdbs.append(sl[1])
-                    logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")
+                if templates:
+                    if templates[0] in ["Active", "Inactive", "Intermediate"]:
+                        
+                        activation_state = templates[0]
+                        url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
+                        r = requests.get( url )
+                        rj = r.json()
+                        
+                        if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in templates:
+                            pdbs.append(pdb)
+                            check_duplicates.append(pdbid)
+                        if len(pdbs) == 4:
+                            break
+                
+                    elif pdb in templates:
+                        pdbs.append(sl[1])
+                        logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")
 
         if len(pdbs) == 0:
             logging.warning("No templates found.")
