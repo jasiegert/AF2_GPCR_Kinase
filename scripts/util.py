@@ -197,3 +197,14 @@ def pdb2str( pdbfile: str ) -> str:
     if line[ :4 ] == "ATOM":
       lines.append( line )
   return "".join( lines )
+
+def remove_msa_for_template_aligned_regions(feature_dict):
+    mask = np.zeros(feature_dict['seq_length'][0], dtype=bool)
+    for templ in feature_dict['template_sequence']:
+        for i,aa in enumerate(templ.decode("utf-8")):
+            if aa != '-':
+                mask[i] = True
+                
+    feature_dict['deletion_matrix_int'][:,mask] = 0
+    feature_dict['msa'][:,mask] = 21
+    return feature_dict
