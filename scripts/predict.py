@@ -211,7 +211,7 @@ def predict_structure_from_templates(
     )
     
     if remove_msa_for_template_aligned:
-        feature_dict = util.remove_msa_for_template_aligned_regions(features_in)
+        features_in = util.remove_msa_for_template_aligned_regions(features_in)
 
     # Run the models
     model_runner = set_config(
