@@ -309,7 +309,6 @@ def predict_structure_from_custom_template(
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
-    remove_msa_for_template_aligned: bool = False,
   ):
 
   f""" Predicts the structure.
@@ -359,12 +358,6 @@ def predict_structure_from_custom_template(
   # Assemble the dictionary of input features
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)
-  
-  lenfeatmsa = len(features_in["msa"])
-  if remove_msa_for_template_aligned:
-      features_in = tfeatures_in
-      lenfeatmsa = 1
-        
 
   # Run the models
   model_runner = set_config(
@@ -374,7 +367,7 @@ def predict_structure_from_custom_template(
       max_recycles,
       model_id,
       n_struct_module_repeats,
-      lenfeatmsa,
+      len(features_in["msa"]),
       model_params=model_params,
   )
 
