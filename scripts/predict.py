@@ -360,8 +360,11 @@ def predict_structure_from_custom_template(
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)
   
+  lenfeatmsa = len(features_in["msa"])
   if remove_msa_for_template_aligned:
-        features_in = tfeatures_in
+      features_in = tfeatures_in
+      lenfeatmsa = 1
+        
 
   # Run the models
   model_runner = set_config(
@@ -371,7 +374,7 @@ def predict_structure_from_custom_template(
       max_recycles,
       model_id,
       n_struct_module_repeats,
-      len(features_in["msa"]),
+      lenfeatmsa,
       model_params=model_params,
   )
 
