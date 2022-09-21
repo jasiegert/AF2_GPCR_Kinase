@@ -234,6 +234,7 @@ def predict_structure_from_templates(
 def predict_structure_without_MSA(
     seq: str,
     outname: str,
+    a3m_lines: str,
     template_path: str,
     model_id: int = -1,
     model_params: int = -1,
@@ -277,7 +278,7 @@ def predict_structure_without_MSA(
         model_params = random.randint(1, 2)
 
     # Assemble the dictionary of input features
-    features_in = util.mk_template(seq, "", template_path).features
+    features_in = util.mk_template(seq, a3m_lines, template_path).features
 
     # Run the models
     model_runner = set_config(
