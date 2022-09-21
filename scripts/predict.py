@@ -72,10 +72,14 @@ def set_config(
     cfg.data.eval.num_ensemble = 1
     if max_msa_clusters > 0:
         cfg.data.eval.max_msa_clusters = min(n_features_in, max_msa_clusters)
+    else:
+        cfg.data.eval.max_msa_clusters = 0
     if max_extra_msa > 0:
         cfg.data.common.max_extra_msa = max(
             1, min(n_features_in - max_msa_clusters, max_extra_msa)
-        )
+            )
+    else:
+        cfg.data.common.max_extra_msa = 0
 
     #### Recycle and number of iterations
 
@@ -164,12 +168,13 @@ def predict_structure_from_templates(
     model_id: int = -1,
     model_params: int = -1,
     random_seed: int = -1,
-    max_msa_clusters: int = -1,
-    max_extra_msa: int = -1,
+    max_msa_clusters: int = 8,
+    max_extra_msa: int = 16,
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
-    remove_msa_for_template_aligned: bool = False
+    remove_msa_for_template_aligned: bool = False,
+    remove_msa: bool = False
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -212,6 +217,10 @@ def predict_structure_from_templates(
     
     if remove_msa_for_template_aligned:
         features_in = util.remove_msa_for_template_aligned_regions(features_in)
+        
+    if remove_msa:
+        max_msa_clusters = 0
+        max_extra_msa = 0
 
     # Run the models
     model_runner = set_config(
@@ -222,73 +231,6 @@ def predict_structure_from_templates(
         model_id,
         n_struct_module_repeats,
         len(features_in["msa"]),
-        model_params=model_params,
-    )
-
-    result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
-
-    del model_runner
-
-    return result
-
-def predict_structure_without_MSA(
-    seq: str,
-    outname: str,
-    a3m_lines: str,
-    template_path: str,
-    model_id: int = -1,
-    model_params: int = -1,
-    random_seed: int = -1,
-    max_recycles: int = 3,
-    n_struct_module_repeats: int = 8,
-    ptm: bool = False,
-) -> NoReturn:
-
-    r"""Predicts the structure.
-
-    Parameters
-    ----------
-    seq : Sequence
-    outname : Name of output PDB
-    a3m_lines : String of entire alignment
-    template_paths : Where to locate templates
-    model_id : Which AF2 model to run (must be 1 or 2 for templates)
-    model_params : Which parameters to provide to AF2 model
-    random_seed : Random seed
-    max_msa_clusters : Number of sequences to use
-    max_extra_msa : Number of extra seqs for summary stats
-    max_recycles : Number of iterations through AF2
-    n_struct_module_repeats : Number of passes through structural refinement
-    ptm: whether adding ptm score within file name or not
-    move_prefix : Prefix for temporary files (deleted after fxn completion)
-
-    Returns
-    ----------
-    None
-
-    """
-
-    if random_seed == -1:
-        random_seed = random.randrange(sys.maxsize)
-
-    if model_id not in (1, 2):
-        model_id = random.randint(1, 2)
-
-    if model_params not in (1, 2):
-        model_params = random.randint(1, 2)
-
-    # Assemble the dictionary of input features
-    features_in = util.mk_template(seq, a3m_lines, template_path).features
-
-    # Run the models
-    model_runner = set_config(
-        True,
-        0,
-        0,
-        max_recycles,
-        model_id,
-        n_struct_module_repeats,
-        1,
         model_params=model_params,
     )
 
