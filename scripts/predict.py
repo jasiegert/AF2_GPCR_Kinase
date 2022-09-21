@@ -221,7 +221,7 @@ def predict_structure_from_templates(
         max_recycles,
         model_id,
         n_struct_module_repeats,
-        0,
+        len(features_in["msa"]),
         model_params=model_params,
     )
 
@@ -277,7 +277,7 @@ def predict_structure_without_MSA(
         model_params = random.randint(1, 2)
 
     # Assemble the dictionary of input features
-    features_in = util.mk_template(seq, None, template_path).features
+    features_in = util.mk_template(seq, "", template_path).features
 
     # Run the models
     model_runner = set_config(
@@ -287,7 +287,7 @@ def predict_structure_without_MSA(
         max_recycles,
         model_id,
         n_struct_module_repeats,
-        len(features_in[0]),
+        0,
         model_params=model_params,
     )
 
