@@ -288,7 +288,7 @@ def predict_structure_without_MSA(
         max_recycles,
         model_id,
         n_struct_module_repeats,
-        0,
+        len(features_in["msa"]),
         model_params=model_params,
     )
 
