@@ -170,7 +170,6 @@ def predict_structure_from_templates(
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
     remove_msa_for_template_aligned: bool = False,
-    remove_msa: bool = False
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -213,10 +212,6 @@ def predict_structure_from_templates(
     
     if remove_msa_for_template_aligned:
         features_in = util.remove_msa_for_template_aligned_regions(features_in)
-        
-    if remove_msa:
-        max_msa_clusters = 0
-        max_extra_msa = 0
 
     # Run the models
     model_runner = set_config(
