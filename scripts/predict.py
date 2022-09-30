@@ -347,13 +347,12 @@ def predict_structure_from_custom_template(
   print( f"\tMaximum number of extra MSA clusters: { max_extra_msa }" )
   print( f"\tMaximum number of recycling iterations: { max_recycles }" )
    
-  pdb_str = util.pdb2str( template_pdb )
   
-  temp_seq = util.pdb2seq(pdb_str)
+  temp_seq = util.pdb2seq(template_pdb)
   print('temp_seq', temp_seq)
         
-  pdb = protein.from_pdb_string( pdb_str )
-  
+  pdb = protein.from_pdb_string(  util.pdb2str( template_pdb ) )
+
   tfeatures_in = {
     "template_aatype" : jax.nn.one_hot( pdb.aatype, 22 )[ : ][ None ],
     "template_all_atom_masks" : pdb.atom_mask[ : ][ None ],

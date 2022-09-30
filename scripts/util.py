@@ -212,7 +212,7 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 #make a function to read a pdb file and return the protein sequence
 def pdb2seq(pdbfile):
     seq = ''
-    for line in pdbfile:
+    for line in open(pdbfile, 'r'):
         if line[:4] == 'ATOM':
             seq += line[17]
     return seq
