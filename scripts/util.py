@@ -216,6 +216,7 @@ def remove_msa_for_custom_template_aligned_regions(feature_dict):
             print(count, aa)
             if aa != '-':
                 mask[count] = True
+                count += 1
                 
     feature_dict['deletion_matrix_int'][:,mask] = 0
     feature_dict['msa'][:,mask] = 21
