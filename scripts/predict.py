@@ -348,8 +348,10 @@ def predict_structure_from_custom_template(
   print( f"\tMaximum number of recycling iterations: { max_recycles }" )
    
   pdb_str = util.pdb2str( template_pdb )
-  #read a pdb and return a list of residues
-  print('pdb_str', pdb_str)
+  
+  temp_seq = util.pdb2seq(pdb_str)
+  print('temp_seq', temp_seq)
+        
   pdb = protein.from_pdb_string( pdb_str )
   
   tfeatures_in = {
