@@ -72,14 +72,10 @@ def set_config(
     cfg.data.eval.num_ensemble = 1
     if max_msa_clusters > 0:
         cfg.data.eval.max_msa_clusters = min(n_features_in, max_msa_clusters)
-    else:
-        cfg.data.eval.max_msa_clusters = 0
     if max_extra_msa > 0:
         cfg.data.common.max_extra_msa = max(
             1, min(n_features_in - max_msa_clusters, max_extra_msa)
             )
-    else:
-        cfg.data.common.max_extra_msa = 0
 
     #### Recycle and number of iterations
 
@@ -216,7 +212,8 @@ def predict_structure_from_templates(
     
     if remove_msa_for_template_aligned:
         features_in = util.remove_msa_for_template_aligned_regions(features_in)
-
+        
+    print('DEBUG:', max_msa_clusters, max_extra_msa)
     # Run the models
     model_runner = set_config(
         True,
