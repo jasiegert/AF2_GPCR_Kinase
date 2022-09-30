@@ -208,13 +208,11 @@ def remove_msa_for_template_aligned_regions(feature_dict):
     feature_dict['msa'][:,mask] = 21
     return feature_dict
 
-#read a pdb file and return the aminoacidic sequence
+#read a pdb file and return the sequence
 def pdb2seq(pdbfile):
     import Bio
     pdb = Bio.PDB.PDBParser().get_structure("TEMP", pdbfile)
     seq = ""
     for res in pdb.get_residues():
-        print(res)
-        print(res.get_resname())
-        seq += Bio.PDB.Polypeptide.three_to_one[res.get_resname()]
+        print(res.get_sequence())
     return seq
