@@ -212,7 +212,4 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 def pdb2seq(pdbfile):
     import Bio
     pdb = Bio.PDB.PDBParser().get_structure("TEMP", pdbfile)
-    seq = ""
-    for res in pdb.get_residues():
-        print(res.get_sequence())
-    return seq
+    return pdb.get_sequence()
