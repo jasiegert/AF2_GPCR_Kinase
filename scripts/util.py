@@ -7,8 +7,6 @@ from alphafold.data import pipeline
 from alphafold.data import templates
 from alphafold.data.tools import hhsearch
 
-import Bio
-
 def mk_mock_template(seq: str) -> dict:
 
     r"""Generates mock templates that will not influence prediction
@@ -215,6 +213,8 @@ def pdb2seq(pdbfile):
     pdb = Bio.PDB.PDBParser().get_structure("TEMP", pdbfile)
     seq = ""
     for res in pdb.get_residues():
+        print(res)
         if res.get_resname() in Bio.PDB.Polypeptide.three_to_one:
+            print(res.get_resname())
             seq += Bio.PDB.Polypeptide.three_to_one[res.get_resname()]
     return seq
