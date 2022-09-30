@@ -215,7 +215,6 @@ def pdb2seq(pdbfile):
     seq = ""
     for res in pdb.get_residues():
         print(res)
-        if res.get_resname() in Bio.PDB.Polypeptide.three_to_one:
-            print(res.get_resname())
-            seq += Bio.PDB.Polypeptide.three_to_one[res.get_resname()]
+        print(res.get_resname())
+        seq += Bio.PDB.Polypeptide.three_to_one[res.get_resname()]
     return seq
