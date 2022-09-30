@@ -211,10 +211,13 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 def remove_msa_for_custom_template_aligned_regions(feature_dict):
     mask = np.zeros(feature_dict['seq_length'][0], dtype=bool)
     for templ in feature_dict['template_sequence']:
-        for i,aa in enumerate(list(templ)):
-            print(i, aa)
+        list_seq = list(temp)
+        print(list_seq)
+        count = 0
+        for aa in list_seq:
             if aa != '-':
-                mask[i] = True          
+                mask[count] = True
+                count += 1          
     feature_dict['deletion_matrix_int'][:,mask] = 0
     feature_dict['msa'][:,mask] = 21
     return feature_dict
