@@ -360,7 +360,10 @@ def predict_structure_from_custom_template(
   # Assemble the dictionary of input features
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)
-
+  
+  if remove_msa_for_template_aligned:
+        features_in = util.remove_msa_for_template_aligned_regions(features_in)
+        
   # Run the models
   model_runner = set_config(
       True,
