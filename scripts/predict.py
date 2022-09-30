@@ -348,13 +348,14 @@ def predict_structure_from_custom_template(
   print( f"\tMaximum number of recycling iterations: { max_recycles }" )
 
   pdb = protein.from_pdb_string( util.pdb2str( template_pdb ) )
-
+  
   tfeatures_in = {
     "template_aatype" : jax.nn.one_hot( pdb.aatype, 22 )[ : ][ None ],
     "template_all_atom_masks" : pdb.atom_mask[ : ][ None ],
     "template_all_atom_positions" : pdb.atom_positions[ :][ None ],
     "template_domain_names" : np.asarray( [ "None" ] ) }
 
+  print(tfeatures_in["template_aatype"])
   # Assemble the dictionary of input features
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)
