@@ -39,7 +39,7 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 # Fetches the data and saves to the appropriate directory
 a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
 ```
-To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state according to GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Inactive", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info into example.log
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state retrieved from GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Inactive", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info into example.log
 
 ```
 import logging
