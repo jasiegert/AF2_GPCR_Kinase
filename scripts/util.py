@@ -210,6 +210,6 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 
 #read a pdb file and return the sequence
 def pdb2seq(pdbfile):
-    import Bio
-    pdb = Bio.PDB.PDBParser().get_structure("TEMP", pdbfile)
-    return pdb.get_sequence()
+    for record in PDB.SeqIO.parse(pdbfile, "pdb-atom"):
+        return record.seq
+
