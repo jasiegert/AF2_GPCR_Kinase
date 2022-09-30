@@ -1,14 +1,6 @@
 # Prediction of alternative conformations using AlphaFold 2
 
-This repository accompanies the manuscript ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. The code used to generate these models can be found in `scripts/` and was derived from the closely related repository [ColabFold](https://github.com/sokrypton/ColabFold/). This repository also includes the scripts used to plot the data, which can be found in `figures/`, as well as scripts to analyze data `analyses_scripts`. Finally, a Google Colab notebook is available for use in `notebooks/`.
-
-The model generation code does not change the underlying AlphaFold v2.0.1 prediction pipeline (multimer prediction is not currently supported - we are working on that!). Therefore, please follow the installation instructions provided by DeepMind and review the AlphaFold2 [license](https://github.com/deepmind/alphafold/blob/main/LICENSE) and [disclaimer](https://github.com/deepmind/alphafold#license-and-disclaimer) before use (additionally, please refer to the [AlphaFold FAQ](https://alphafold.ebi.ac.uk/faq) and [ColabFold FAQ](https://github.com/sokrypton/ColabFold/blob/main/README.md)). The objective of the code contained here is to provide access to otherwise hard-to-reach settings that facilitate the generation of conformationally heterogeneous models of protein structures. Genetic and/or structural databases *do not* need to be downloaded - everything is accessible through the cloud via the [MMseqs2 API](https://github.com/soedinglab/MMseqs2).
-
-<p align="center"><img src="https://github.com/delalamo/af2_conformations/blob/a1642c8ae1dd2e7af2c3efd06bafc569512655d0/figures/header/fig1_header.png" height="250"/></p>
-
-*De novo* prediction of protein structures in multiple alternative conformations can usually be achieved for proteins that are absent from the AlphaFold2 training set, i.e. their structures were not determined prior to 30 April 2018. Predicting multiple conformations of proteins in the training set is, in our experience, sometimes but not usually possible.
-
-We recommend sampling across several MSA depths. When MSAs are too shallow, the proteins are totally misfolded, whereas when they are too deep the models are conformationally uniform. The "Goldilocks range" of MSA depths that achieve the maximum number of correctly folded, but structurally diverse models seems to differ from protein to protein; in our experience, they appear to correlate with the number of amino acids. In any case, initial guesses for MSA depths can range 32-128 sequences for proteins absent from the training set and 8-64 sequences for proteins in the training set (note that this is much less than the 1000-5000 sequences that are used by AlphaFold2 by default). Once generated, these models can be analyzed using any dimensionality reduction and/or clustering algorithm; in our study we use PCA and focus mainly on the models at either extreme.
+This repository if a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of 1. predict the intended conformational state of proteins by combining genetic information and template structures in the most effective way. In case of GPCRs, users can simply state which ativation state they want to predict and the script will combine the best templates found in GPCRdb with the MSA. 2. Refine a custom PDB to identify the closest energetic minima.
 
 ### How to use the code in this repository
 
@@ -39,11 +31,13 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 # Fetches the data and saves to the appropriate directory
 a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
 ```
-To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state retrieved from GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Inactive", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info into example.log
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state retrieved from GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Inactive", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info into example.log and run a prediction of LSHR.
 
 ```
 import logging
 logging.basicConfig(filename='example.log', level=logging.DEBUG)
+
+
 ```
 
 The following code then runs a prediction without templates. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM-score of model within file name. 
