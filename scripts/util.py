@@ -7,6 +7,7 @@ from alphafold.data import pipeline
 from alphafold.data import templates
 from alphafold.data.tools import hhsearch
 
+import Bio
 
 def mk_mock_template(seq: str) -> dict:
 
