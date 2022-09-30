@@ -210,7 +210,7 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 def remove_msa_for_custom_template_aligned_regions(feature_dict):
     mask = np.zeros(feature_dict['seq_length'][0], dtype=bool)
     for templ in feature_dict['template_sequence']:
-        list_seq = [c for c in templ]
+        print(templ)
         print(list_seq)
         for i in len(list_seq):
             print(i)
