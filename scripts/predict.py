@@ -213,7 +213,6 @@ def predict_structure_from_templates(
     if remove_msa_for_template_aligned:
         features_in = util.remove_msa_for_template_aligned_regions(features_in)
         
-    print('DEBUG:', max_msa_clusters, max_extra_msa)
     # Run the models
     model_runner = set_config(
         True,
