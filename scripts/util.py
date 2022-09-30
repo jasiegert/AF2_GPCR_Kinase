@@ -210,7 +210,7 @@ def remove_msa_for_template_aligned_regions(feature_dict):
 def remove_msa_for_custom_template_aligned_regions(feature_dict):
     mask = np.zeros(feature_dict['seq_length'][0], dtype=bool)
     tempseq = list(feature_dict['template_sequence'])
-    for i,aa in enumerate(tempseq)
+    for i,aa in enumerate(tempseq):
         print(i, aa)
         if aa != '-':
                 mask[i] = True  
