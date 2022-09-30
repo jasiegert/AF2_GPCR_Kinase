@@ -346,8 +346,11 @@ def predict_structure_from_custom_template(
   print( f"\tMaximum number of MSA clusters: { max_msa_clusters }" )
   print( f"\tMaximum number of extra MSA clusters: { max_extra_msa }" )
   print( f"\tMaximum number of recycling iterations: { max_recycles }" )
-
-  pdb = protein.from_pdb_string( util.pdb2str( template_pdb ) )
+   
+  pdb_str = util.pdb2str( template_pdb )
+  #read a pdb and return a list of residues
+  print('pdb_str', pdb_str)
+  pdb = protein.from_pdb_string( pdb_str )
   
   tfeatures_in = {
     "template_aatype" : jax.nn.one_hot( pdb.aatype, 22 )[ : ][ None ],
@@ -355,7 +358,7 @@ def predict_structure_from_custom_template(
     "template_all_atom_positions" : pdb.atom_positions[ :][ None ],
     "template_domain_names" : np.asarray( [ "None" ] ) }
 
-  print('TEFEAT:', tfeatures_in)
+
   # Assemble the dictionary of input features
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)

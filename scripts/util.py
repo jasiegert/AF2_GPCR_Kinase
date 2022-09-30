@@ -208,3 +208,13 @@ def remove_msa_for_template_aligned_regions(feature_dict):
     feature_dict['deletion_matrix_int'][:,mask] = 0
     feature_dict['msa'][:,mask] = 21
     return feature_dict
+
+#make a function to read a pdb file and return a list of the residues
+def read_pdb(pdb_file):
+    with open(pdb_file) as f:
+        lines = f.readlines()
+    residues = []
+    for line in lines:
+        if line.startswith('ATOM'):
+            residues.append(line[17:20])
+    return residues
