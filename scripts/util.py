@@ -208,6 +208,17 @@ def remove_msa_for_template_aligned_regions(feature_dict):
     feature_dict['msa'][:,mask] = 21
     return feature_dict
 
+def remove_msa_for_custom_template_aligned_regions(feature_dict):
+    mask = np.zeros(feature_dict['seq_length'][0], dtype=bool)
+    for templ in feature_dict['template_sequence']:
+        for i,aa in enumerate(templ):
+            if aa != '-':
+                mask[i] = True
+                
+    feature_dict['deletion_matrix_int'][:,mask] = 0
+    feature_dict['msa'][:,mask] = 21
+    return feature_dict
+
 #read a pdb file and return the sequence
 def pdb2seq(pdbfile):
     from Bio import SeqIO

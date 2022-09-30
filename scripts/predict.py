@@ -362,7 +362,7 @@ def predict_structure_from_custom_template(
       seq, a3m_lines, tfeatures_in)
   
   if remove_msa_for_template_aligned:
-        features_in = util.remove_msa_for_template_aligned_regions(features_in)
+        features_in = util.remove_msa_for_custom_template_aligned_regions(features_in)
         
   # Run the models
   model_runner = set_config(
