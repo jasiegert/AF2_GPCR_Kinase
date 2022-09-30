@@ -355,7 +355,7 @@ def predict_structure_from_custom_template(
     "template_all_atom_positions" : pdb.atom_positions[ :][ None ],
     "template_domain_names" : np.asarray( [ "None" ] ) }
 
-  print('TEFEAT:', tfeatures_in["template_aatype"])
+  print('TEFEAT:', tfeatures_in)
   # Assemble the dictionary of input features
   features_in = util.setup_features(
       seq, a3m_lines, tfeatures_in)
