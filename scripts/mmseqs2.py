@@ -268,19 +268,26 @@ class MMSeqs2Runner:
                 pdbid = pdb.split("_")[0]
                 
                 if templates:
-                    if templates[0] in ["Active", "Inactive", "Intermediate"]:
+                    if templates[0] in ["Active", "Inactive", "Intermediate"] and pdbid not in check_duplicates and pdbid not in templates:
                         
                         activation_state = templates[0]
                         url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                         r = requests.get( url )
                         rj = r.json()
                         
-                        if type(rj) is dict and rj["state"] == activation_state and pdbid not in check_duplicates and pdbid not in templates:
+                        if type(rj) is dict and rj["state"] == activation_state:
                             pdbs.append(pdb)
                             check_duplicates.append(pdbid)
                         if len(pdbs) == 4:
                             break
-                
+                                            
+                    #if templates[0] in ["in", "out", "out-like"]  and pdbid not in check_duplicates and pdbid in templates:                        
+                    #     url = "https://klifs.net/api_v2/structures_pdb_list?pdb-codes={}".format( pdbid )
+                    #     r = requests.get( url )
+                    #     rj = r.json()
+                    #     if rj[0] != 400:           
+                    #         print(rj[0]['pdb'])
+                    
                     elif pdb in templates:
                         pdbs.append(sl[1])
                         logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")
