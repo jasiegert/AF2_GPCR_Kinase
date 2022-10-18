@@ -280,8 +280,8 @@ class MMSeqs2Runner:
                             if rj["signalling_protein"]["type"] == activation_state:
                                 pdbs.append(pdb)
                                 check_duplicates.append(pdbid)    
-                        if len(pdbs) == 4:
-                            break
+                        #if len(pdbs) == 4:
+                        #    break
                                             
                     #if templates[0] in ["in", "out", "out-like"]  and pdbid not in check_duplicates and pdbid in templates:                        
                     #     url = "https://klifs.net/api_v2/structures_pdb_list?pdb-codes={}".format( pdbid )
