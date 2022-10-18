@@ -268,7 +268,6 @@ class MMSeqs2Runner:
                 pdbid = pdb.split("_")[0]
                 if templates:
                     if templates[0] in ["Active", "Inactive", "Intermediate", "G protein", "Arrestin"] and pdbid not in check_duplicates and pdbid not in templates:
-                        
                         activation_state = templates[0]
                         url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                         r = requests.get( url )
@@ -282,13 +281,73 @@ class MMSeqs2Runner:
                                 check_duplicates.append(pdbid)    
                         #if len(pdbs) == 4:
                         #    break
+                    
                                             
-                    #if templates[0] in ["in", "out", "out-like"]  and pdbid not in check_duplicates and pdbid in templates:                        
-                    #     url = "https://klifs.net/api_v2/structures_pdb_list?pdb-codes={}".format( pdbid )
-                    #     r = requests.get( url )
-                    #     rj = r.json()
-                    #     if rj[0] != 400:           
-                    #         print(rj[0]['pdb'])
+                    if len(templates[0]) == 3 and pdbid not in check_duplicates and pdbid not in templates:
+                        if templates[0][0] in ["in", "out", "out-like"]:
+                            dfg = templates[0][0]
+                        elif templates[0][0] == "all":
+                            dfg = "all"
+                        else:
+                            raise RuntimeError("DFG value invalid")
+                        if templates[0][1] in ["in", "out",]:    
+                            ac_helix = templates[0][1]
+                        elif templates[0][1] == "all":
+                            ac_helix = "all"
+                        else:
+                            raise RuntimeError("ac_helix value invalid")       
+                        if templates[0][2] in  ["yes", "no", "all"]:
+                            salt_bridge = templates[0][2]
+                        else:
+                            raise RuntimeError("salt_bridge value invalid")
+                        url = "https://klifs.net/api_v2/structures_pdb_list?pdb-codes={}".format( pdbid )
+                        r = requests.get( url )
+                        rj = r.json()
+                        #print(rj)
+                        if rj[0] != 400:           
+                            #take kinase_ID value and search for structure_conformation
+                            structure_ID = rj[0]["structure_ID"]
+                            url = "https://klifs.net/api_v2/structure_conformation?structure_ID={}".format( structure_ID )
+                            r = requests.get( url )
+                            rj = r.json()
+                            #print(rj)
+                            if float(rj[0]["salt_bridge_17_24"]) > 0 and float(rj[0]["salt_bridge_17_24"]) <= 4.5:
+                                ref_sb = "yes"
+                            else:
+                                ref_sb = "no"
+                            if dfg != "all" and ac_helix != "all" and salt_bridge != "all":
+                                if rj[0]["DFG"] == dfg and rj[0]["ac_helix"] == ac_helix and  salt_bridge == ref_sb:
+                                    print(rj[0])  
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg != "all" and ac_helix != "all" and salt_bridge == "all":
+                                if rj[0]["DFG"] == dfg and rj[0]["ac_helix"] == ac_helix:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg != "all" and ac_helix == "all" and salt_bridge != "all":
+                                if rj[0]["DFG"] == dfg and salt_bridge == ref_sb:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg != "all" and ac_helix == "all" and salt_bridge == "all":
+                                if rj[0]["DFG"] == dfg:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg == "all" and ac_helix != "all" and salt_bridge != "all":
+                                if rj[0]["ac_helix"] == ac_helix and salt_bridge == ref_sb:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg == "all" and ac_helix != "all" and salt_bridge == "all":
+                                if rj[0]["ac_helix"] == ac_helix:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg == "all" and ac_helix == "all" and salt_bridge != "all":
+                                if salt_bridge == ref_sb:
+                                    pdbs.append(pdb)
+                                    check_duplicates.append(pdbid)
+                            elif dfg == "all" and ac_helix == "all" and salt_bridge == "all":
+                                pdbs.append(pdb)
+                                check_duplicates.append(pdbid)
+                        #        print(rj[0])                            
                     
                     elif pdb in templates:
                         pdbs.append(sl[1])
