@@ -444,7 +444,7 @@ class MMSeqs2Runner:
 
         return self._process_alignment(a3m_files, templates)
     
-    def shuffle_templates(self) -> Tuple[str, str]:
+    def shuffle_templates(self) -> List:
     
         r"""
         Run sequence alignments using MMseqs2
