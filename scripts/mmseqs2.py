@@ -238,7 +238,7 @@ class MMSeqs2Runner:
                 )
             )
 
-    def process_templates(self, templates: List[str] = [] ) -> str:
+    def process_templates(self, templates: List[str] = [] ) -> list:
 
         r"""Process templates and fetch from MMSeqs2 server
 
@@ -352,24 +352,36 @@ class MMSeqs2Runner:
                     elif pdb in templates:
                         pdbs.append(sl[1])
                         logging.info(f"{ sl[0] }\t{ sl[1] }\t{ sl[2] }\t{ sl[10] }")
-
+        
+        #write comma-seprated pdbs to file
+        with open(f"{ self.path }/template_pdbs.txt", "w") as outfile:
+            for pdb in pdbs:
+                outfile.write(f"{ pdb },")
+            
+        print("PRINTED LIST:", pdbs)
+        
+        return self.download_templates(pdbs)
+        
+    def download_templates(self, pdbs) -> str:
+        """Shuffle templates."""
+        
+        path = f"{ self.job }_env/templates_101"
+        if os.path.isdir(path):
+            os.system(f"rm -r { path }")
+            
         if len(pdbs) == 0:
             logging.warning("No templates found.")
             return ""
-
         else:
             if not os.path.isdir(path):
                 os.mkdir(path)
-
+            
             if len(pdbs) > 1 and self.shuffling_templates:
                 random.shuffle(pdbs)
             
-            if len(templates) == 0:
-                pdbs = ",".join(templates[: self.n_templates])
-            else:
-                pdbs = ",".join(pdbs[: self.n_templates])
-
-            logging.info("template pdbs are: " + pdbs)
+            pdbs = ",".join(pdbs[: self.n_templates])
+        
+            logging.info("TEMPLATE PDBS USED: " + pdbs)
 
             os.system(f"wget -q -O - { self.t_url }/{ pdbs } |tar xzf - -C { path }/")
 
@@ -431,3 +443,33 @@ class MMSeqs2Runner:
                 tar_gz.extractall(self.path)
 
         return self._process_alignment(a3m_files, templates)
+    
+    def shuffle_templates(self) -> Tuple[str, str]:
+    
+        r"""
+        Run sequence alignments using MMseqs2
+
+        Parameters
+        ----------
+        use_templates: Whether to use templates
+
+        Returns
+        ----------
+        Tuple with [0] string with alignment, and [1] path to template
+
+        """
+        #read input file and extract the fir row in a list
+        with open(f"{ self.path }/template_pdbs.txt", "r") as infile:
+            pdbs = infile.read().split(",")
+        
+        #remove last element of a list if it is empty
+        if pdbs[-1] == "":
+            pdbs.pop()
+        print("READ_LIST: ", pdbs)
+        
+        if len(pdbs) > 1:
+            self.shuffling_templates=True
+        else:
+            logging.warning("Impossible to shuffle with 1 template only.")
+            
+        return self.download_templates(pdbs)
