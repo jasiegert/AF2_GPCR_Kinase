@@ -5,6 +5,7 @@ import re
 import requests
 import tarfile
 import time
+import random
 
 from absl import logging
 from typing import List, NoReturn, Tuple
@@ -45,6 +46,7 @@ class MMSeqs2Runner:
         t_url: str = "https://a3m-templates.mmseqs.com/template",
         path_suffix: str = "env",
         n_templates: int = 20,
+        shuffling_templates: bool = False,
     ):
 
         r"""Initialize runner object
@@ -69,6 +71,7 @@ class MMSeqs2Runner:
         self.host_url = host_url
         self.t_url = t_url
         self.n_templates = n_templates
+        self.shuffling_templates = shuffling_templates
 
         self.path = "_".join((self.job, path_suffix))
 
@@ -355,15 +358,17 @@ class MMSeqs2Runner:
             return ""
 
         else:
-
             if not os.path.isdir(path):
                 os.mkdir(path)
 
-#            pdbs = [t for t in pdbs if t in templates]
+            if len(pdbs) > 1 and self.shuffling_templates:
+                random.shuffle(pdbs)
+            
             if len(templates) == 0:
                 pdbs = ",".join(templates[: self.n_templates])
             else:
                 pdbs = ",".join(pdbs[: self.n_templates])
+
                 
             logging.info("template pdbs are: " + pdbs)
 
