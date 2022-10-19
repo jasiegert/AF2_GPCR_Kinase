@@ -279,9 +279,6 @@ class MMSeqs2Runner:
                             if rj["signalling_protein"]["type"] == activation_state:
                                 pdbs.append(pdb)
                                 check_duplicates.append(pdbid)    
-                        #if len(pdbs) == 4:
-                        #    break
-                    
                                             
                     if len(templates[0]) == 3 and pdbid not in check_duplicates and pdbid not in templates:
                         if templates[0][0] in ["in", "out", "out-like"]:
@@ -363,8 +360,7 @@ class MMSeqs2Runner:
                 os.mkdir(path)
 
 #            pdbs = [t for t in pdbs if t in templates]
-
-            if len(templates) == 0 or len(pdbs) == 0:
+            if len(templates) == 0:
                 pdbs = ",".join(templates[: self.n_templates])
             else:
                 pdbs = ",".join(pdbs[: self.n_templates])
