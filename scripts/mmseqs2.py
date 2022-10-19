@@ -369,7 +369,6 @@ class MMSeqs2Runner:
             else:
                 pdbs = ",".join(pdbs[: self.n_templates])
 
-                
             logging.info("template pdbs are: " + pdbs)
 
             os.system(f"wget -q -O - { self.t_url }/{ pdbs } |tar xzf - -C { path }/")
