@@ -303,7 +303,7 @@ class MMSeqs2Runner:
                         url = "https://klifs.net/api_v2/structures_pdb_list?pdb-codes={}".format( pdbid )
                         r = requests.get( url )
                         rj = r.json()
-                        #print(rj)
+                        print(rj)
                         if rj[0] != 400:           
                             #take kinase_ID value and search for structure_conformation
                             structure_ID = rj[0]["structure_ID"]
@@ -355,8 +355,6 @@ class MMSeqs2Runner:
         with open(f"{ self.path }/template_pdbs.txt", "w") as outfile:
             for pdb in pdbs:
                 outfile.write(f"{ pdb },")
-            
-        print("PRINTED LIST:", pdbs)
         
         return self.download_templates(pdbs)
         
