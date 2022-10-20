@@ -317,7 +317,6 @@ class MMSeqs2Runner:
                                 ref_sb = "no"
                             if dfg != "all" and ac_helix != "all" and salt_bridge != "all":
                                 if rj[0]["DFG"] == dfg and rj[0]["ac_helix"] == ac_helix and  salt_bridge == ref_sb:
-                                    print(rj[0])  
                                     pdbs.append(pdb)
                                     check_duplicates.append(pdbid)
                             elif dfg != "all" and ac_helix != "all" and salt_bridge == "all":
@@ -346,8 +345,7 @@ class MMSeqs2Runner:
                                     check_duplicates.append(pdbid)
                             elif dfg == "all" and ac_helix == "all" and salt_bridge == "all":
                                 pdbs.append(pdb)
-                                check_duplicates.append(pdbid)
-                        #        print(rj[0])                            
+                                check_duplicates.append(pdbid)                           
                     
                     elif pdb in templates:
                         pdbs.append(sl[1])
