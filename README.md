@@ -114,6 +114,7 @@ kinase_temps = ["out", "all", "all" ] # Format is [DFG, aC_helix, salt_bridge]
 # kinases annotation list followed by PDB IDs to be excluded
 pdbs = [kinase_temps, "6N3O", "6N3L", "6N3N", "7QQ6", "7QWK"]
 ```
+### Introducing mutations into MSA
 
 There is also functionality to introduce mutations (e.g. alanines) across the entire MSA to remove the evolutionary evidence for specific interactions (see [here](https://www.biorxiv.org/content/10.1101/2021.11.29.470469v1) and [here](https://twitter.com/sokrypton/status/1464748132852547591) on why you would want to do this). This can be achieved as follows:
 
