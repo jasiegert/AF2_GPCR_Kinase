@@ -68,7 +68,7 @@ jobname = 'lshr_gprot_4t'
 sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQYYNHAIDWQTGSGCSTAGFFTVFASELSVYTLTVITLERWHTITYAIHLDQKLRLRHAILIMLGGWLFSSLIAMLPLVGVSNYMKVSICFPMDVETTLSQVYILTILILNVVAFFIICACYIKIYFAVRNPELMATNKDTKIAKKMAILIFTDFTCMAPISFFAISAAFKVPLITVTNSKVLLVLFYPINSCANPFLYAIFTKTFQRDFFLLLSKFGCC")
 
 
-# State annotation and PDB IDs to be excluded
+# State annotation followed by PDB IDs to be excluded
 pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
 
 #parameters
@@ -111,7 +111,7 @@ Similarly to predict user-defined GPCRs functional states, users can force AF2 t
 # structural properties of kinase templates to be used
 kinase_temps = ["out", "all", "all" ] # Format is [DFG, aC_helix, salt_bridge]
 
-# kinases annotation list and PDB IDs to be excluded
+# kinases annotation list followed by PDB IDs to be excluded
 pdbs = [kinase_temps, "6N3O", "6N3L", "6N3N", "7QQ6", "7QWK"]
 ```
 
