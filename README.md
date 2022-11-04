@@ -95,8 +95,9 @@ from af2_conformations.scripts import predict
 for i in range( n_models ):
   model_name = str(jobname + "_" + str(_rank) + ".pdb")
   
-  # Optionally, templates used for each model can be randomized among the list of PDBs matching the functional state. Uncomment line below to enable templates randomization.
-  ##template_path = mmseqs2_runner.shuffle_templates()
+  # Optionally, templates can be shuffled within the list of PDBs passing filters. 
+  # Uncomment line below to enable templates randomization.
+  # template_path = mmseqs2_runner.shuffle_templates()
   
   predict.predict_structure_from_templates(sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
   _rank += 1
