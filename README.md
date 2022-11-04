@@ -1,4 +1,4 @@
-# Prediction of alternative conformations using AlphaFold 2
+# Updated version of "Prediction of alternative conformations using AlphaFold 2"
 
 This repository if a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of predicting a user-defined conformational state of a GPCR or a Kinase with minimal effort. We also introduced known features like using a custom pdb template or print the predicted pTM score for each model.
 
