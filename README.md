@@ -1,15 +1,16 @@
 # Prediction of alternative conformations using AlphaFold 2
 
-This repository if a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of 1. predict the intended conformational state of proteins by combining genetic information and template structures in the most effective way. In case of GPCRs, users can simply state which ativation state they want to predict and the script will combine the best templates found in GPCRdb with the MSA. 2. Refine a custom PDB to identify the closest energetic minima.
+This repository if a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of predicting a user-defined conformational state of a GPCR or a Kinase with minimal effort. We also introduced known features like using a custom pdb template or print the predicted pTM score for each model.
 
 ### How to use the code in this repository
 
 Before importing the code contained in the `scripts/` folder, the user needs to install the AlphaFold source code and download the parameters to a directory named `params/`. Additional Python modules that must be installed include [Numpy](https://numpy.org/), [Requests](https://docs.python-requests.org/en/latest/), and [Logging](https://abseil.io/docs/python/guides/logging).
 
-The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest:
+The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM score before .pdb . 
 
 ```python
 from af2_conformations.scripts import mmseqs2
+from af2_conformations.scripts import predict
 
 # Jobname for reference
 jobname = 'T4_lysozyme'
@@ -30,41 +31,74 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 
 # Fetches the data and saves to the appropriate directory
 a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
-```
-To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate"). The script will use the best four templates in the specified activation state retrieved from GPCRdb.org . PDB ids can be excluded simply adding those to the list without chain ID specified like ["Inactive", "7FII"] to predict the activation state of your target without using 7FII. Which PDB ids are used to bias the prediction can be retrieved from the loggin.info level. Here an example on outputting info into example.log and run a prediction of LSHR.
 
-```
-import logging
-logging.basicConfig(filename='example.log', level=logging.DEBUG)
-
-
-```
-
-The following code then runs a prediction without templates. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM-score of model within file name. 
-
-```python
-from af2_conformations.scripts import predict
-
-predict.predict_structure_no_templates( sequence, "out.pdb",
-         a3m_lines, model_id = 1, max_msa_clusters = 16,
-         max_extra_msa = 32, max_recycles = 1, n_struct_module_repeats = 8, ptm = True )
-```
-
-To run a prediction with templates:
-
-```python
+# Run a single prediction with templates
 predict.predict_structure_from_templates( sequence, "out.pdb",
         a3m_lines, template_path = template_path,
         model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
         max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
-```
-To run a prediction with a custom PDB template:
-
-```python
+        
+# Run a single prediction without templates 
+predict.predict_structure_no_templates( sequence, "out.pdb",
+         a3m_lines, model_id = 1, max_msa_clusters = 16,
+         max_extra_msa = 32, max_recycles = 1, n_struct_module_repeats = 8, ptm = True )
+         
+# Run a prediction with a custom pdb template. 
 predict.predict_structure_from_custom_template( sequence, "out.pdb",
-        a3m_lines, template_pdb = template_pdb,
+        a3m_lines, template_pdb = "template.pdb",
         model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
         max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
+```
+## Predicting a user-defined GPCR functional state
+
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply adding PDB IDs without chain ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but exclusing 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example 'grep PDBS example.log'). Templates can also be randomized for each model. Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined with a G protein bound but exlcuding all the protein PDBs released.  
+
+```python
+from af2_conformations.scripts import mmseqs2
+import multiprocessing
+import logging
+logging.basicConfig(filename='example.log', level=logging.DEBUG) # print log with debug level
+
+# Jobname for reference
+jobname = 'lshr_gprot_4t'
+
+# Amino acid sequence. Whitespace and inappropriate characters are automatically removed
+sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQYYNHAIDWQTGSGCSTAGFFTVFASELSVYTLTVITLERWHTITYAIHLDQKLRLRHAILIMLGGWLFSSLIAMLPLVGVSNYMKVSICFPMDVETTLSQVYILTILILNVVAFFIICACYIKIYFAVRNPELMATNKDTKIAKKMAILIFTDFTCMAPISFFAISAAFKVPLITVTNSKVLLVLFYPINSCANPFLYAIFTKTFQRDFFLLLSKFGCC")
+
+
+# State annotation and PDB IDs to be excluded
+pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
+
+#parameters
+max_msa_clusters = 8 # Number of sequence clusters
+max_extra_msa = 16   # Number of extra sequences not clustered
+max_recycles = 1     # Number of neural network iterations
+n_struct_module_repeats = 8
+n_models = 50   # Number of models to be predicted
+model_id = -1   # Which AF neural network. -1 = Randomize
+model_params = -1 # Which AF neural network parameters. -1 = Randomize
+ptm = True    # Print pTM value before .pdb of each model
+_rank = 1   # Number assigned to the first predicted model
+remove_msa_for_template_aligned = False  # Remove the genetic information for regions already covered by templates. Copied from Heo L. et al., DOI: 10.1002/prot.26382.
+n_templates = 4 # Number of templates to be used
+
+# Initializes the Runner object that queries the MMSeqs2 server
+mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence, n_templates = n_templates )
+
+# Fetches the data and saves to the appropriate directory
+a3m_lines, template_path = mmseqs2_runner.run_job(templates = pdbs )
+
+from af2_conformations.scripts import predict
+
+for i in range( n_models ):
+  model_name = str(jobname + "_" + str(_rank) + ".pdb")
+  
+  # Optionally, templates used for each model can be randomized among the list of PDBs matching the functional state. Uncomment line below to enable templates randomization.
+  ##template_path = mmseqs2_runner.shuffle_templates()
+  
+  predict.predict_structure_from_templates(sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
+  _rank += 1
+  
 ```
 
 There is also functionality to introduce mutations (e.g. alanines) across the entire MSA to remove the evolutionary evidence for specific interactions (see [here](https://www.biorxiv.org/content/10.1101/2021.11.29.470469v1) and [here](https://twitter.com/sokrypton/status/1464748132852547591) on why you would want to do this). This can be achieved as follows:
