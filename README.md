@@ -105,7 +105,7 @@ for i in range( n_models ):
 
 ## Predicting user-defined structural features of kinases
 
-Similarly to predict user-defined GPCRs functional states, users can force AF2 to retrieve kinase templates matching three structural features from KLIFS. In pariticular, three conformational properties can be used: 1. DFG 2. aC_helix 3. Salt-bridge KIII.17 and EαC.24. These are the values that can be used for each property 1. DFG: out, in, out-like, all 2. aC_helix: out, in, all 3. Salt-bridge: yes, no, all. The format to be used is three member list to be inserted in the first position of the pdbs list. What to change in the script above to predict models with templates in DFG=out is reported below.
+Similar to the prediction of user-defined GPCRs functional states, users can force AF2 to retrieve kinase templates matching three structural features from KLIFS. In pariticular, three conformational properties can be used: 1. DFG 2. aC_helix 3. Salt-bridge KIII.17 and EαC.24. Here the values that can be used for each property 1. DFG: out, in, out-like, all 2. aC_helix: out, in, all 3. Salt-bridge: yes, no, all. Following the example above, the format must be a three members list in the first position of the pdbs list. Besides sequence and jobname, that to change in the script above to predict models with templates in DFG=out is reported below.
 
 ```python
 # structural properties of kinase templates to be used
