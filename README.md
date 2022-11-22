@@ -1,12 +1,12 @@
 # Updated version of "Prediction of alternative conformations using AlphaFold 2"
 
-This repository if a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of predicting a user-defined conformational state of a GPCR or a Kinase with minimal effort. We also introduced known features like using a custom pdb template or print the predicted pTM score for each model.
+This repository is a fork of our previous work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of predicting a user-defined conformational state of GPCR and Kinase with minimal effort. We also introduced known features like using a custom pdb template or print the predicted pTM score for each model.
 
 ### How to use the code in this repository
 
 Before importing the code contained in the `scripts/` folder, the user needs to install the AlphaFold source code and download the parameters to a directory named `params/`. Additional Python modules that must be installed include [Numpy](https://numpy.org/), [Requests](https://docs.python-requests.org/en/latest/), and [Logging](https://abseil.io/docs/python/guides/logging).
 
-The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM score before .pdb . 
+The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM score as a suffix of model name. 
 
 ```python
 from af2_conformations.scripts import mmseqs2
@@ -51,9 +51,9 @@ predict.predict_structure_from_custom_template( sequence, "out.pdb",
 ```
 ## Predicting a user-defined GPCR conformational state
 
-To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply adding PDB IDs without chain ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but exclusing 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example 'grep PDBS example.log'). 
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply by adding PDB IDs without chain the ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but excluding 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example by typing 'grep PDBS example.log'). 
 Templates can also be randomized for each model. 
-Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined with a G protein bound but exlcuding all the protein PDBs released.  
+Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined with a G protein bound but excluding all LSHR PDBs released.  
 
 ```python
 from af2_conformations.scripts import mmseqs2
@@ -106,7 +106,7 @@ for i in range( n_models ):
 
 ## Predicting user-defined structural features of kinases
 
-Similar to predicting user-defined GPCRs functional states, users can force AF2 to retrieve kinase templates matching three structural feature values from KLIFS. Allowed structural properties are: 1. DFG 2. aC_helix 3. Salt-bridge (KIII.17 and EαC.24). Allowed values for the corresponding property 1. DFG: out, in, out-like, all 2. aC_helix: out, in, all 3. Salt-bridge: yes, no, all. Following the example above, the format must be a three members list in the first position of the pdbs list. Besides sequence and jobname, that to change in the script above to predict models with templates in DFG=out is reported below.
+Similar to predicting user-defined GPCRs functional states, users can force AF2 to retrieve kinase templates matching three structural feature values from KLIFS. Allowed structural properties are: 1. DFG 2. aC_helix 3. Salt-bridge (KIII.17 and EαC.24). Allowed values for the corresponding property 1. DFG: out, in, out-like, all 2. aC_helix: out, in, all 3. Salt-bridge: yes, no, all. Following the example above, the format must be a three members list in the first position of the pdbs list. Besides sequence and jobname, what to change in the script above to predict models with templates in DFG=out is reported below.
 
 ```python
 # structural properties of kinase templates to be used
@@ -137,7 +137,7 @@ If you find any other issues please let us know in the "issues" tab above.
 
 ### Citation
 
-If the code in this repository has helped your scientific project, please consider citing our preprint:
+If the code in this repository has helped your scientific project, please consider citing our paper:
 
 ```bibtex
 @article {10.7554/eLife.75751,
