@@ -75,7 +75,7 @@ pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
 max_msa_clusters = 8 # Number of sequence clusters
 max_extra_msa = 16   # Number of extra sequences not clustered
 max_recycles = 1     # Number of neural network iterations
-n_struct_module_repeats = 8
+n_struct_module_repeats = 8 # Number of the structure module iterations
 n_models = 50   # Number of models to be predicted
 model_id = -1   # Which AF neural network. -1 = Randomize
 model_params = -1 # Which AF neural network parameters. -1 = Randomize
