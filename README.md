@@ -49,7 +49,7 @@ predict.predict_structure_from_custom_template( sequence, "out.pdb",
         model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
         max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
 ```
-## Predicting a user-defined GPCR conformational state
+## Predicting a user-defined GPCR functional state
 
 To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply by adding PDB IDs without chain the ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but excluding 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example by typing 'grep PDBS example.log'). 
 Templates can also be randomized for each model. 
