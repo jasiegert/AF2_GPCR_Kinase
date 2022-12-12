@@ -140,6 +140,17 @@ If you find any other issues please let us know in the "issues" tab above.
 If the code in this repository has helped your scientific project, please consider citing our papers:
 
 ```bibtex
+@article {Sala2022.12.11.519936,
+	author = {Sala, Davide and Meiler, Jens},
+	title = {Biasing AlphaFold2 to predict GPCRs and Kinases with user-defined functional or structural properties},
+	elocation-id = {2022.12.11.519936},
+	year = {2022},
+	doi = {10.1101/2022.12.11.519936},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2022/12/11/2022.12.11.519936},
+	eprint = {https://www.biorxiv.org/content/early/2022/12/11/2022.12.11.519936.full.pdf},
+	journal = {bioRxiv}
+}
 @article {10.7554/eLife.75751,
 article_type = {journal},
 title = {Sampling alternative conformational states of transporters and receptors with AlphaFold2},
