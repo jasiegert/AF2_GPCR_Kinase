@@ -135,9 +135,9 @@ Here is a shortlist of known problems that we are currently working on:
 
 If you find any other issues please let us know in the "issues" tab above.
 
-### Citation
+### Citations
 
-If the code in this repository has helped your scientific project, please consider citing our paper:
+If the code in this repository has helped your scientific project, please consider citing our papers:
 
 ```bibtex
 @article {10.7554/eLife.75751,
@@ -158,3 +158,4 @@ issn = {2050-084X},
 publisher = {eLife Sciences Publications, Ltd},
 }
 ```
+
