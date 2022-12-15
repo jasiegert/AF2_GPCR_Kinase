@@ -8,21 +8,6 @@ Before importing the code contained in the `scripts/` folder, the user needs to 
 
 The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM score as a suffix of model name. 
 
-```python
-from af2_conformations.scripts import mmseqs2
-from af2_conformations.scripts import predict
-
-# Jobname for reference
-jobname = 'T4_lysozyme'
-
-# Amino acid sequence. Whitespace and inappropriate characters are automatically removed
-sequence = ("MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNCNGVIT"
-            "KDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRCALINMVFQMGETGVAGFTNSL"
-            "RMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAYKNL" )
-            
-
-
-```
 ## Predicting a user-defined GPCR functional state
 
 To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply by adding PDB IDs without chain the ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but excluding 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example by typing 'grep PDBS example.log'). 
