@@ -26,7 +26,7 @@ jobname = 'lshr_gprot_4t'
 # Amino acid sequence. Whitespace and inappropriate characters are automatically removed
 sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQYYNHAIDWQTGSGCSTAGFFTVFASELSVYTLTVITLERWHTITYAIHLDQKLRLRHAILIMLGGWLFSSLIAMLPLVGVSNYMKVSICFPMDVETTLSQVYILTILILNVVAFFIICACYIKIYFAVRNPELMATNKDTKIAKKMAILIFTDFTCMAPISFFAISAAFKVPLITVTNSKVLLVLFYPINSCANPFLYAIFTKTFQRDFFLLLSKFGCC")
 
-# State annotation followed by PDB IDs to be excluded
+# State annotation followed by PDB IDs to be excluded.
 pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
 
 #parameters
@@ -57,19 +57,20 @@ for i in range( n_models ):
   # Uncomment line below to enable templates randomization.
   # template_path = mmseqs2_runner.shuffle_templates()
   
-  #pick one of these three functions
-  
   # Run a single prediction with templates
 predict.predict_structure_from_templates( sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
-        
-# Run a single prediction without templates 
-predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
-         
-# Run a prediction with a custom pdb template. 
-predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
   _rank += 1
   
+  #Two alternatives to predict 1. without templates or 2. with local pdb as a template
+  
+  # 1. Run a single prediction without templates 
+predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
+         
+# 2. Run a prediction with a local pdb template. 
+predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
+  
 ```
+
 
 ## Predicting user-defined structural features of kinases
 
