@@ -20,34 +20,8 @@ sequence = ("MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNCNGVIT"
             "KDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRCALINMVFQMGETGVAGFTNSL"
             "RMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAYKNL" )
             
-# PDB IDs, written uppercase with chain ID specified
-pdbs = ["6LB8_A",
-        "6LB8_C",
-        "4PK0_A",
-        "6FW2_A"]
 
-# Initializes the Runner object that queries the MMSeqs2 server
-mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence )
 
-# Fetches the data and saves to the appropriate directory
-a3m_lines, template_path = mmseqs2_runner.run_job( templates = pdbs )
-
-# Run a single prediction with templates
-predict.predict_structure_from_templates( sequence, "out.pdb",
-        a3m_lines, template_path = template_path,
-        model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
-        max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
-        
-# Run a single prediction without templates 
-predict.predict_structure_no_templates( sequence, "out.pdb",
-         a3m_lines, model_id = 1, max_msa_clusters = 16,
-         max_extra_msa = 32, max_recycles = 1, n_struct_module_repeats = 8, ptm = True )
-         
-# Run a prediction with a custom pdb template. 
-predict.predict_structure_from_custom_template( sequence, "out.pdb",
-        a3m_lines, template_pdb = "template.pdb",
-        model_id = 1, max_msa_clusters = 16, max_extra_msa = 32,
-        max_recycles = 1, n_struct_module_repeats = 8 , ptm = True )
 ```
 ## Predicting a user-defined GPCR functional state
 
@@ -66,7 +40,6 @@ jobname = 'lshr_gprot_4t'
 
 # Amino acid sequence. Whitespace and inappropriate characters are automatically removed
 sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQYYNHAIDWQTGSGCSTAGFFTVFASELSVYTLTVITLERWHTITYAIHLDQKLRLRHAILIMLGGWLFSSLIAMLPLVGVSNYMKVSICFPMDVETTLSQVYILTILILNVVAFFIICACYIKIYFAVRNPELMATNKDTKIAKKMAILIFTDFTCMAPISFFAISAAFKVPLITVTNSKVLLVLFYPINSCANPFLYAIFTKTFQRDFFLLLSKFGCC")
-
 
 # State annotation followed by PDB IDs to be excluded
 pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
@@ -99,7 +72,16 @@ for i in range( n_models ):
   # Uncomment line below to enable templates randomization.
   # template_path = mmseqs2_runner.shuffle_templates()
   
-  predict.predict_structure_from_templates(sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
+  #pick one of these three functions
+  
+  # Run a single prediction with templates
+predict.predict_structure_from_templates( sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
+        
+# Run a single prediction without templates 
+predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
+         
+# Run a prediction with a custom pdb template. 
+predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned)
   _rank += 1
   
 ```
