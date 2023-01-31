@@ -15,7 +15,7 @@ Templates can also be randomized for each model.
 Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined with a G protein bound but excluding all LSHR PDBs released.  
 
 ```python
-from af2_conformations.scripts import mmseqs2
+from AF2_GPCR_Kinase.scripts import mmseqs2
 import multiprocessing
 import logging
 logging.basicConfig(filename='example.log', level=logging.DEBUG) # print log with debug level
@@ -48,7 +48,7 @@ mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence, n_templates = n_templ
 # Fetches the data and saves to the appropriate directory
 a3m_lines, template_path = mmseqs2_runner.run_job(templates = pdbs )
 
-from af2_conformations.scripts import predict
+from AF2_GPCR_Kinase.scripts import predict
 
 for i in range( n_models ):
   model_name = str(jobname + "_" + str(_rank) + ".pdb")
