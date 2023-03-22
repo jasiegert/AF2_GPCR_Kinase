@@ -30,8 +30,8 @@ sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQ
 pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
 
 #parameters
-max_msa_clusters = 8 # Number of sequence clusters
-max_extra_msa = 16   # Number of extra sequences not clustered
+max_msa_clusters = 32 # Number of sequence clusters
+max_extra_msa = 64   # Number of extra sequences not clustered
 max_recycles = 1     # Number of neural network iterations
 n_struct_module_repeats = 8 # Number of the structure module iterations
 n_models = 50   # Number of models to be predicted
