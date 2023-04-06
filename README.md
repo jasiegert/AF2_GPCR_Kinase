@@ -30,8 +30,8 @@ sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQ
 pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
 
 #parameters
-max_msa_clusters = 8 # Number of sequence clusters
-max_extra_msa = 16   # Number of extra sequences not clustered
+max_msa_clusters = 32 # Number of sequence clusters
+max_extra_msa = 64   # Number of extra sequences not clustered
 max_recycles = 1     # Number of neural network iterations
 n_struct_module_repeats = 8 # Number of the structure module iterations
 n_models = 50   # Number of models to be predicted
@@ -63,7 +63,7 @@ for i in range( n_models ):
   #Two alternatives to predict 1. without templates or 2. with local pdb as a template
   
   # 1. Run a prediction without templates 
-  predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
+  predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm)
          
 # 2. Run a prediction with a local pdb template. 
   predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm,      remove_msa_for_template_aligned=remove_msa_for_template_aligned)
