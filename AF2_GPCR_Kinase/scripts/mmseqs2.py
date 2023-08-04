@@ -262,6 +262,8 @@ class MMSeqs2Runner:
 
         pdbs = []
         check_duplicates = []
+        # Upper case pdb codes, so the comparison to exclude templates becomes case insensitive
+        templates_upper = [t.upper() for t in templates if isinstance(t, str)]
         with open(f"{ self.path }/pdb70.m8", "r") as infile:
 
             for line in infile:
@@ -272,7 +274,7 @@ class MMSeqs2Runner:
                 # GPCRdb only accepts pdb codes in uppercase (otherwise the returned request will be empty)
                 pdbid = pdbid.upper()
                 if templates:
-                    if templates[0] in ["Active", "Inactive", "Intermediate", "G protein", "Arrestin"] and pdbid not in check_duplicates and pdbid not in templates:
+                    if templates[0] in ["Active", "Inactive", "Intermediate", "G protein", "Arrestin"] and pdbid not in check_duplicates and pdbid not in templates_upper:
                         activation_state = templates[0]
                         url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                         r = requests.get( url )
@@ -431,9 +433,6 @@ class MMSeqs2Runner:
 
         """
 
-        # Make pdb codes upper case for consistency later on
-        templates_upper = [t.upper() for t in templates]
-
         self._search_mmseqs2()
 
         a3m_files = ["uniref.a3m", "bfd.mgnify30.metaeuk30.smag30.a3m"]
@@ -443,7 +442,7 @@ class MMSeqs2Runner:
             with tarfile.open(self.tarfile) as tar_gz:
                 tar_gz.extractall(self.path)
 
-        return self._process_alignment(a3m_files, templates_upper)
+        return self._process_alignment(a3m_files, templates)
     
     def shuffle_templates(self) -> List:
     
