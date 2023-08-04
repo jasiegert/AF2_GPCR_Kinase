@@ -431,6 +431,9 @@ class MMSeqs2Runner:
 
         """
 
+        # Make pdb codes upper case for consistency later on
+        templates_upper = [t.upper() for t in templates]
+
         self._search_mmseqs2()
 
         a3m_files = ["uniref.a3m", "bfd.mgnify30.metaeuk30.smag30.a3m"]
@@ -440,7 +443,7 @@ class MMSeqs2Runner:
             with tarfile.open(self.tarfile) as tar_gz:
                 tar_gz.extractall(self.path)
 
-        return self._process_alignment(a3m_files, templates)
+        return self._process_alignment(a3m_files, templates_upper)
     
     def shuffle_templates(self) -> List:
     
