@@ -26,6 +26,7 @@ def set_config(
     n_features_in: int,
     monomer: bool = True,
     model_params: int = 0,
+    data_dir = ".",
 ) -> model.RunModel:
 
     r"""Generated Runner object for AlphaFold
@@ -94,7 +95,7 @@ def set_config(
     cfg.data.common.reduce_msa_clusters_by_max_templates = t
     cfg.data.eval.subsample_templates = t
 
-    p = data.get_model_haiku_params(model_name=name, data_dir=".")
+    p = data.get_model_haiku_params(model_name=name, data_dir=data_dir)
 
     logging.debug("Prediction parameters:")
     logging.debug("\tModel ID: {}".format(model_id))
@@ -170,6 +171,7 @@ def predict_structure_from_templates(
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
     remove_msa_for_template_aligned: bool = False,
+    data_dir : str = ".",
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -223,6 +225,7 @@ def predict_structure_from_templates(
         n_struct_module_repeats,
         len(features_in["msa"]),
         model_params=model_params,
+        data_dir = data_dir,
     )
 
     result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
@@ -243,6 +246,7 @@ def predict_structure_no_templates(
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
+    data_dir : str = ".",
 ) -> NoReturn:
 
     r"""Predicts the structure.
@@ -287,6 +291,7 @@ def predict_structure_no_templates(
         n_struct_module_repeats,
         len(features_in["msa"]),
         model_params=model_params,
+        data_dir = data_dir,
     )
 
     result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
@@ -308,7 +313,8 @@ def predict_structure_from_custom_template(
     max_recycles: int = 3,
     n_struct_module_repeats: int = 8,
     ptm: bool = False,
-    remove_msa_for_template_aligned: bool = False
+    remove_msa_for_template_aligned: bool = False,
+    data_dir : str = "."
   ):
 
   f""" Predicts the structure.
@@ -374,6 +380,7 @@ def predict_structure_from_custom_template(
       n_struct_module_repeats,
       len(features_in["msa"]),
       model_params=model_params,
+      data_dir = data_dir,
   )
 
   result = run_one_job(model_runner, features_in, random_seed, outname, ptm)
