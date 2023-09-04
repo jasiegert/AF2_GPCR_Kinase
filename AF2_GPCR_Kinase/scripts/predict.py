@@ -408,10 +408,13 @@ def to_pdb(
 
     """
 
+    outname_head, outname_tail = os.path.split(outname)
+    tmp_outname = os.path.join(outname_head, "b_" + outname_tail)
+
     with open(outname, "w") as outfile:
         outfile.write(protein.to_pdb(pred))
 
-    with open(f"b_{ outname }", "w") as outfile:
+    with open(tmp_outname, "w") as outfile:
         for line in open(outname, "r").readlines():
             if line[0:6] == "ATOM  ":
                 seq_id = int(line[22:26].strip()) - 1
@@ -422,5 +425,4 @@ def to_pdb(
                     )
                 )
     
-    os.rename(f"b_{ outname }", outname)
-
+    os.rename(tmp_outname, outname)
