@@ -2,9 +2,12 @@
 
 This repository is an expansion of our previous [colabfold](https://github.com/sokrypton/ColabFold)-based work ["Sampling alternative conformational states of transporters and receptors with AlphaFold2"](https://elifesciences.org/articles/75751) by Diego del Alamo, Davide Sala, Hassane S. Mchaourab, and Jens Meiler. All the functionalities have been kept. To have a general overview, please read the README.md at https://github.com/delalamo/af2_conformations. Here, our previous workflow is extended with the aim of predicting a user-defined conformational state of GPCR and Kinase with minimal effort. We also introduced known features like using a custom pdb template or print the predicted pTM score for each model. 
 
-### How to use the code in this repository
+### Installation
 
-Before importing the code contained in the `scripts/` folder, the user needs to install the AlphaFold source code and download the parameters to a directory named `params/`. Additional Python modules that must be installed include [Numpy](https://numpy.org/), [Requests](https://docs.python-requests.org/en/latest/), and [Logging](https://abseil.io/docs/python/guides/logging).
+The most important dependency is AlphaFold, see the [Deepmind AlphaFold repo](https://github.com/deepmind/alphafold) for installation instructions. Additionally, the following packages are required: [Numpy](https://numpy.org/), [Requests](https://docs.python-requests.org/en/latest/), and [Logging](https://abseil.io/docs/python/guides/logging), e.g. via ```conda install -c conda-forge numpy absl-py requests``` or ```pip install conda-forge numpy absl-py requests```.
+Once the requirements are set up, the package can be installed using ```pip install .```.
+
+### How to use the code in this repository
 
 The scripts can be imported and used out-of-the-box to fetch multiple sequence alignments and/or templates of interest. Note that the `max_msa_clusters` and `max_extra_msa` options can be provided to reduce the size of the multiple sequence alignment. If these are not provided, the networks default values will be used. Additional options allow the number of recycles, as well as the number of loops through the recurrent Structure Module, to be specified. In addition, ptm can be enabled to print pTM score as a suffix of model name. 
 
@@ -20,6 +23,9 @@ from AF2_GPCR_Kinase.scripts import mmseqs2
 import multiprocessing
 import logging
 logging.basicConfig(filename='example.log', level=logging.DEBUG) # print log with debug level
+
+# Alphafold data dir, which contains the params folder, e.g. /path/to/data to access /path/to/data/params
+AF_data_dir = "/path/to/data"
 
 # Jobname for reference
 jobname = 'lshr_gprot_4t'
@@ -62,15 +68,15 @@ for i in range( n_models ):
   # template_path = mmseqs2_runner.shuffle_templates()
   
   # Run a prediction with templates
-  predict.predict_structure_from_templates( sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned )
+  predict.predict_structure_from_templates( sequence, model_name, a3m_lines, template_path=template_path,  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, remove_msa_for_template_aligned=remove_msa_for_template_aligned , data_dir = AF_data_dir)
   
   #Two alternatives to predict 1. without templates or 2. with local pdb as a template
   
   # 1. Run a prediction without templates 
-  predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm)
+  predict.predict_structure_no_templates( sequence, model_name, a3m_lines, model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm, data_dir = AF_data_dir)
          
 # 2. Run a prediction with a local pdb template. 
-  predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm,      remove_msa_for_template_aligned=remove_msa_for_template_aligned)
+  predict.predict_structure_from_custom_template( sequence, model_name, a3m_lines, template_pdb="pdb_file",  model_id=model_id, max_msa_clusters=max_msa_clusters, max_extra_msa=max_extra_msa, max_recycles=max_recycles, n_struct_module_repeats=n_struct_module_repeats, ptm=ptm,      remove_msa_for_template_aligned=remove_msa_for_template_aligned, data_dir = AF_data_dir)
   
   _rank += 1
 ```
