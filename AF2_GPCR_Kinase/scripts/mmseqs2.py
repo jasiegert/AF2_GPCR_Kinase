@@ -11,6 +11,24 @@ from absl import logging
 from typing import List, NoReturn, Tuple
 
 
+def get_subfamily(protein : str) -> str:
+    """Fetch a protein's subfamily from the GPCRdb."""
+    # Entry format is {protein}_{organism} -> add human if no organism is specified
+    if not "_" in protein:
+        protein += "_human"
+    # Fetch protein entry from GPCRdb
+    gpcrdb_url = f"http://gpcrdb.org/services/protein/{protein}"
+    r = requests.get(gpcrdb_url)
+    # Check validity of response
+    if not r.ok:
+        raise ValueError(f"The protein {protein} could not be found in the GPCRdb!")
+    # "family" contains four numbers connected with underscores, each representing a layer of the classification
+    # e.g. 001_003_003_002 designates the protein LSHR, 001_003_003 is its subfamily (Glycoprotein hormone receptors)
+    gpcr_entry_dict = r.json()
+    full_family = gpcr_entry_dict["family"]
+    subfamily = "_".join(full_family.split("_")[:-1])
+    return subfamily
+
 class MMSeqs2Runner:
 
     r"""Runner object
@@ -238,7 +256,7 @@ class MMSeqs2Runner:
                 )
             )
 
-    def process_templates(self, templates: List[str] = [] ) -> list:
+    def process_templates(self, templates: List[str] = [], exclude_gpcr_subfamily = None ) -> list:
 
         r"""Process templates and fetch from MMSeqs2 server
 
@@ -246,6 +264,7 @@ class MMSeqs2Runner:
         ----------
         templates : list of pdb ids with chain
         exclusion_gpcrs : list of pdb ids without chain
+        exclude_subfamily : GPCRdb subfamily (e.g. 001_003_003)
 
         Returns
         ----------
@@ -276,16 +295,26 @@ class MMSeqs2Runner:
                 if templates:
                     if templates[0] in ["Active", "Inactive", "Intermediate", "G protein", "Arrestin"] and pdbid not in check_duplicates and pdbid not in templates_upper:
                         activation_state = templates[0]
+                        # Fetch information from GPCRdb
                         url = "http://gpcrdb.org/services/structure/{}".format( pdbid )
                         r = requests.get( url )
                         rj = r.json()
+                        # Check subfamily exclusion
+                        if type(rj) is dict and exclude_gpcr_subfamily is not None and rj["family"].startswith(exclude_gpcr_subfamily):
+                            wrong_subfamily = True
+                        else:
+                            wrong_subfamily = False
+                        # Check activation state
                         if type(rj) is dict and rj["state"] == activation_state:
+                            correct_activation_state = True
+                        elif type(rj) is dict and "signalling_protein" in rj and rj["signalling_protein"]["type"] == activation_state:
+                            correct_activation_state = True
+                        else:
+                            correct_activation_state = False
+                        # Proceed with pdbs passing all criteria
+                        if correct_activation_state and not wrong_subfamily:
                             pdbs.append(pdb)
-                            check_duplicates.append(pdbid)
-                        elif type(rj) is dict and "signalling_protein" in rj:
-                            if rj["signalling_protein"]["type"] == activation_state:
-                                pdbs.append(pdb)
-                                check_duplicates.append(pdbid)    
+                            check_duplicates.append(pdbid)    
                                             
                     if len(templates[0]) == 3 and pdbid not in check_duplicates and pdbid not in templates:
                         if templates[0][0] in ["in", "out", "out-like"]:
@@ -392,7 +421,7 @@ class MMSeqs2Runner:
             return path
 
     def _process_alignment(
-        self, a3m_files: list, templates: List[str] = []
+        self, a3m_files: list, templates: List[str] = [], exclude_gpcr_subfamily = None,
     ) -> Tuple[str, str]:
 
         r"""Process sequence alignment
@@ -416,9 +445,9 @@ class MMSeqs2Runner:
                 if len(line) > 0:
                     a3m_lines += line.replace("\x00", "")
 
-        return a3m_lines, self.process_templates(templates)
+        return a3m_lines, self.process_templates(templates, exclude_gpcr_subfamily = exclude_gpcr_subfamily)
 
-    def run_job(self, templates: List[str] = []) -> Tuple[str, str]:
+    def run_job(self, templates: List[str] = [], exclude_gpcr_subfamily = None) -> Tuple[str, str]:
 
         r"""
         Run sequence alignments using MMseqs2
@@ -442,7 +471,7 @@ class MMSeqs2Runner:
             with tarfile.open(self.tarfile) as tar_gz:
                 tar_gz.extractall(self.path)
 
-        return self._process_alignment(a3m_files, templates)
+        return self._process_alignment(a3m_files, templates, exclude_gpcr_subfamily = exclude_gpcr_subfamily)
     
     def shuffle_templates(self) -> List:
     
