@@ -10,9 +10,10 @@ The scripts can be imported and used out-of-the-box to fetch multiple sequence a
 
 ## Predicting a user-defined GPCR functional state
 
-To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply by adding PDB IDs without chain the ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but excluding 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example by typing 'grep PDBS example.log'). 
+To predict a specific activation state of a GPCR target, the pdbs list must contain one of the following string in the first position ("Inactive", "Active", "Intermediate", "G protein", "Arrestin"). The script will retrieve templates in the annotated functional state from GPCRdb.org. Template PDBs can be excluded simply by adding PDB IDs without chain the ID specified to the list. Example: ["G protein", "7FII"] to predict the active state of your target by using G protein bound templates but excluding 7FII. Which PDB ids have been used to bias the prediction can be retrieved from the log file (example by typing 'grep PDBS example.log').
+For GPCR targets, PDBs of proteins from a given GPCR subfamily can be excluded. The subfamily can be fetched from the GPCRdb given a protein name. For example for LSHR (GPCRdb "family" entry: 001_003_003_002), the subfamily would be "001_003_003" and passing it along as exclude_gpcr_subfamily would exclude the closely related Glycoprotein hormone receptors FSHR (001_003_003_001), LSHR (001_003_003_002) and TSHR (001_003_003_001).
 Templates can also be randomized for each model. 
-Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined with a G protein bound but excluding all LSHR PDBs released.  
+Below, an example of outputting info into example.log and predict 50 models of LSHR by using the best 4 templates determined in active state, but excluding all LSHR PDBs released and all PDBS of proteins from the same subfamily (LSHR, FSHR, TSHR).  
 
 ```python
 from AF2_GPCR_Kinase.scripts import mmseqs2
@@ -27,7 +28,9 @@ jobname = 'lshr_gprot_4t'
 sequence = ("YDFLRVLIWLINILAIMGNMTVLFVLLTSRYKLTVPRFLMCNLSFADFCMGLYLLLIASVDSQTKGQYYNHAIDWQTGSGCSTAGFFTVFASELSVYTLTVITLERWHTITYAIHLDQKLRLRHAILIMLGGWLFSSLIAMLPLVGVSNYMKVSICFPMDVETTLSQVYILTILILNVVAFFIICACYIKIYFAVRNPELMATNKDTKIAKKMAILIFTDFTCMAPISFFAISAAFKVPLITVTNSKVLLVLFYPINSCANPFLYAIFTKTFQRDFFLLLSKFGCC")
 
 # State annotation followed by PDB IDs to be excluded.
-pdbs = ["G protein", "7FII", "7FIG", "7FIH", "7FIJ"]
+pdbs = ["Active", "7FII", "7FIG", "7FIH", "7FIJ"]
+# Fetch subfamily from GPCRdb (e.g. 001_003_003 for lshr -> Class A, Protein receptors, Glycoprotein hormone receptors)
+target_gpcr_subfamily = mmseqs2.get_subfamily("lshr_human")
 
 #parameters
 max_msa_clusters = 32 # Number of sequence clusters
@@ -46,7 +49,8 @@ n_templates = 4 # Number of templates to be used
 mmseqs2_runner = mmseqs2.MMSeqs2Runner( jobname, sequence, n_templates = n_templates )
 
 # Fetches the data and saves to the appropriate directory
-a3m_lines, template_path = mmseqs2_runner.run_job(templates = pdbs )
+# Pass along activation state in pdbs[0], structures to exclude in pdbs[1:] and subfamily to exclude
+a3m_lines, template_path = mmseqs2_runner.run_job(templates = pdbs , exclude_gpcr_subfamily = target_gpcr_subfamily )
 
 from AF2_GPCR_Kinase.scripts import predict
 
